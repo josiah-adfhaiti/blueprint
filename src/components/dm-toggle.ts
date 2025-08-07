@@ -1,11 +1,9 @@
 import type { OnloadArgs } from "roamjs-components/types";
 
-let extAPI: any;
-
 export function setAppearance(mode: string) {
   console.log("Set Appearance: " + mode);
 
-  let btn = document.getElementsByClassName("blueprint-toggle-icon")[0];
+  let btn = document.getElementsByClassName("rs2-toggle-icon")[0];
 
   if (mode == "Auto") {
     if (document.documentElement.classList.contains("bp3-light")) {
@@ -27,8 +25,8 @@ export function setAppearance(mode: string) {
   }
 }
 
-export function toggleAppearance() {
-  let mode = extAPI.settings.get("bp-appearance") as string;
+export function toggleAppearance(extensionAPI: any) {
+  let mode = extensionAPI.settings.get("rs2-appearance") as string;
 
   if (mode == "Auto") {
     mode = "Dark";
@@ -37,8 +35,7 @@ export function toggleAppearance() {
   } else {
     mode = "Auto";
   }
-
-  extAPI.settings.set("bp-appearance", mode);
+  extensionAPI.settings.set("rs2-appearance", mode);
   setAppearance(mode);
 }
 
@@ -48,7 +45,7 @@ export function createToggle(extensionAPI: any) {
     popoverButton.className = "bp3-popover-wrapper";
 
     const popoverIcon = document.createElement("span");
-    popoverIcon.className = `bp3-button bp3-minimal bp3-small bp3-icon-${icon} blueprint-dm-toggle blueprint-toggle-icon`;
+    popoverIcon.className = `bp3-button bp3-minimal bp3-small bp3-icon-${icon} rs2-dm-toggle rs2-toggle-icon`;
 
     popoverButton.appendChild(popoverIcon);
 
@@ -56,11 +53,9 @@ export function createToggle(extensionAPI: any) {
   };
 
   let iconName = "moon";
-  let mode = extensionAPI.settings.get("bp-appearance") as string;
+  let mode = extensionAPI.settings.get("rs2-appearance") as string;
 
-  extAPI = extensionAPI;
-
-  const nameToUse = "blueprintToggleDarkMode";
+  const nameToUse = "rs2";
 
   switch (mode) {
     case "Auto":
@@ -83,11 +78,11 @@ export function createToggle(extensionAPI: any) {
 
     const nextIconButton = roamTopbar[0].lastElementChild;
     const flexDiv = document.createElement("div");
-    flexDiv.className = "rm-topbar__spacer-sm blueprint-dm-toggle";
+    flexDiv.className = "rm-topbar__spacer-sm rs2-dm-toggle";
     flexDiv.id = nameToUse + "-flex-space";
 
     const flexDivAfter = document.createElement("div");
-    flexDivAfter.className = "rm-topbar__spacer-sm blueprint-dm-toggle";
+    flexDivAfter.className = "rm-topbar__spacer-sm rs2-dm-toggle";
     flexDivAfter.id = nameToUse + "-flex-space-after";
 
     nextIconButton.insertAdjacentElement("afterend", mainButton);
@@ -100,9 +95,17 @@ export function createToggle(extensionAPI: any) {
 }
 
 export function destroyToggle() {
-  const toggles = document.querySelectorAll(".blueprint-dm-toggle");
+  const toggles = document.querySelectorAll(".rs2-dm-toggle");
 
   toggles.forEach((tog) => {
     tog.remove();
   });
+
+  if (document.documentElement.classList.contains("bp3-light")) {
+    document.documentElement.classList.remove("bp3-light");
+  }
+
+  if (document.documentElement.classList.contains("bp3-dark")) {
+    document.documentElement.classList.remove("bp3-dark");
+  }
 }
